@@ -378,8 +378,8 @@ func (p *Parser) parseIndex() (*core.Index, error) {
 	return index, nil
 }
 
-func isArrayType(p *Parser) (string, error) {
-	// check if is of type "[]IDENT"
+func isSpecialType(p *Parser) (string, error) {
+	// check if is of type []IDENT
 	if p.token == token.LBRACK {
 		p.next()
 		if p.token == token.RBRACK {
@@ -388,6 +388,8 @@ func isArrayType(p *Parser) (string, error) {
 				return "[]" + p.lit, nil
 			}
 		}
+	} else if p.token == token.DSTRING { // check if is quoted -> "some.value"
+		return p.lit, nil
 	}
 	return "", errors.New("is not an array type")
 }
@@ -397,7 +399,7 @@ func (p *Parser) parseColumn(name string) (*core.Column, error) {
 		Name: name,
 	}
 	if p.token != token.IDENT {
-		t, err := isArrayType(p)
+		t, err := isSpecialType(p)
 		if err != nil {
 			return nil, p.expect("int, varchar,...")
 		}

@@ -131,6 +131,25 @@ func TestParseTableWithArrayType(t *testing.T) {
 
 	table := dbml.Tables[0]
 	if table.Columns[0].Name != "notes" {
-		t.Fatalf("column name should be 'note'")
+		t.Fatalf("column name should be 'notes'")
+	}
+}
+
+func TestParseTableWithQuotedType(t *testing.T) {
+	parser := p(`
+	Table int {
+		notes "big.int"
+	}
+	`)
+	dbml, err := parser.Parse()
+
+	//t.Log(err)
+	if err != nil {
+		t.Fatalf("%v", err)
+	}
+
+	table := dbml.Tables[0]
+	if table.Columns[0].Name != "notes" {
+		t.Fatalf("column name should be 'notes'")
 	}
 }
