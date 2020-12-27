@@ -22,6 +22,7 @@ func TestIllegalSyntax(t *testing.T) {
 	}
 }
 
+//goland:noinspection GoNilness
 func TestParseSimple(t *testing.T) {
 	parser := p(`
 	Project test {
@@ -72,6 +73,7 @@ func TestParseTableName(t *testing.T) {
 	if err != nil {
 		t.Fail()
 	}
+	//goland:noinspection GoNilness
 	table := dbml.Tables[0]
 	if table.Name != "int" {
 		t.Fatalf("table name should be 'int'")
@@ -88,6 +90,7 @@ func TestParseTableWithType(t *testing.T) {
 	if err != nil {
 		t.Fail()
 	}
+	//goland:noinspection GoNilness
 	table := dbml.Tables[0]
 	if table.Columns[0].Name != "type" {
 		t.Fatalf("column name should be 'type'")
@@ -109,6 +112,25 @@ func TestParseTableWithNoteColumn(t *testing.T) {
 
 	table := dbml.Tables[0]
 	if table.Columns[0].Name != "note" {
+		t.Fatalf("column name should be 'note'")
+	}
+}
+
+func TestParseTableWithArrayType(t *testing.T) {
+	parser := p(`
+	Table int {
+		notes []int
+	}
+	`)
+	dbml, err := parser.Parse()
+
+	//t.Log(err)
+	if err != nil {
+		t.Fatalf("%v", err)
+	}
+
+	table := dbml.Tables[0]
+	if table.Columns[0].Name != "notes" {
 		t.Fatalf("column name should be 'note'")
 	}
 }

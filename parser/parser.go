@@ -1,6 +1,7 @@
 package parser
 
 import (
+	"errors"
 	"fmt"
 	"os"
 	"strings"
@@ -377,14 +378,33 @@ func (p *Parser) parseIndex() (*core.Index, error) {
 	return index, nil
 }
 
+func isArrayType(p *Parser) (string, error) {
+	// check if is of type "[]IDENT"
+	if p.token == token.LBRACK {
+		p.next()
+		if p.token == token.RBRACK {
+			p.next()
+			if p.token == token.IDENT {
+				return "[]" + p.lit, nil
+			}
+		}
+	}
+	return "", errors.New("is not an array type")
+}
+
 func (p *Parser) parseColumn(name string) (*core.Column, error) {
 	column := &core.Column{
 		Name: name,
 	}
 	if p.token != token.IDENT {
-		return nil, p.expect("int, varchar,...")
+		t, err := isArrayType(p)
+		if err != nil {
+			return nil, p.expect("int, varchar,...")
+		}
+		column.Type = t
+	} else {
+		column.Type = p.lit
 	}
-	column.Type = p.lit
 	p.next()
 
 	// parse for type
