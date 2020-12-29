@@ -78,6 +78,9 @@ func TestParseTableName(t *testing.T) {
 	if table.Name != "int" {
 		t.Fatalf("table name should be 'int'")
 	}
+	if table.Columns[0].Settings.Null {
+		t.Fatalf("column setting should not allow null")
+	}
 }
 
 func TestParseTableWithType(t *testing.T) {
@@ -151,5 +154,43 @@ func TestParseTableWithQuotedType(t *testing.T) {
 	table := dbml.Tables[0]
 	if table.Columns[0].Name != "notes" {
 		t.Fatalf("column name should be 'notes'")
+	}
+}
+
+func TestParseTableNullable(t *testing.T) {
+	parser := p(`
+	Table int {
+		note string [null]
+	}
+	`)
+	dbml, err := parser.Parse()
+
+	//t.Log(err)
+	if err != nil {
+		t.Fatalf("%v", err)
+	}
+
+	table := dbml.Tables[0]
+	if !table.Columns[0].Settings.Null {
+		t.Fatalf("column setting should allow null")
+	}
+}
+
+func TestParseTableNotNullable(t *testing.T) {
+	parser := p(`
+	Table int {
+		note string [not null]
+	}
+	`)
+	dbml, err := parser.Parse()
+
+	//t.Log(err)
+	if err != nil {
+		t.Fatalf("%v", err)
+	}
+
+	table := dbml.Tables[0]
+	if table.Columns[0].Settings.Null {
+		t.Fatalf("column setting should not allow null")
 	}
 }

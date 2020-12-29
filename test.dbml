@@ -10,7 +10,7 @@ Project test {
 Table users as U {
   id int [pk, unique, increment] // auto-increment
   full_name varchar [not null, unique, default: 1]
-  created_at "time.Time"
+  created_at "time.Time" [null]
   country_code int
   type int
   note int

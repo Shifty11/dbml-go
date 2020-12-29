@@ -476,6 +476,8 @@ func (p *Parser) parseColumnSettings() (*core.ColumnSetting, error) {
 				return nil, p.expect("null")
 			}
 			columnSetting.Null = false
+		case token.NULL:
+			columnSetting.Null = true
 		case token.UNIQUE:
 			columnSetting.Unique = true
 		case token.INCREMENT:
