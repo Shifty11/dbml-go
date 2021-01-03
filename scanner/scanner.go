@@ -140,6 +140,8 @@ func (s *Scanner) scanString(quo rune) (token.Token, string) {
 					count++
 				case eof:
 					return token.ILLEGAL, buf.String()
+				default:
+					count = 0
 				}
 				buf.WriteRune(s.ch)
 				s.next()
