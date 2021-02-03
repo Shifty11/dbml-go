@@ -87,6 +87,7 @@ Table products {
   price int
   status products_status
   created_at datetime [default: `now()`]
+  UpdatedAt datetime [note: 'django:`auto_now=True`ent:`Default(time.Now).\nUpdateDefault(time.Now)`']
 
   Indexes {
     (merchant_id, status) [name:'product_status', type: hash]
